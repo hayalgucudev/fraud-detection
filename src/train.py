@@ -184,9 +184,9 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
     print(f"Results — {dataset_name}")
     print(f"{'=' * 70}")
     print(pd.DataFrame(results).to_string(index=False))
-    print(f"\nCross-Validation Results:")
+    print("\nCross-Validation Results:")
     print(pd.DataFrame(cv_results).to_string(index=False))
-    print("\nBest model: {best_name} (PR-AUC = {best_pr_auc:.4f})")
+    print(f"\nBest model: {best_name} (PR-AUC = {best_pr_auc:.4f})")
     print(f"{'=' * 70}\n")
     return best_model, best_name, results, cv_results, X_test, y_test
 
