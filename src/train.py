@@ -2,7 +2,6 @@ import argparse
 import logging
 import os
 import pickle
-
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -17,7 +16,6 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import StratifiedKFold, cross_validate, train_test_split
 from xgboost import XGBClassifier
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -38,8 +36,6 @@ def load_dataset(path: str, target: str):
     logger.info("Loaded %s: %d rows, %d features, fraud=%.2f%%",
                 os.path.basename(path), len(df), X.shape[1], y.mean()*100)
     return X, y
-
-
 def evaluate(model, X_test, y_test, name=""):
     """Return dict of evaluation metrics."""
     y_pred = model.predict(X_test)
@@ -54,8 +50,6 @@ def evaluate(model, X_test, y_test, name=""):
         "report":      classification_report(y_test, y_pred, zero_division=0),
         "conf_matrix": confusion_matrix(y_test, y_pred),
     }
-
-
 def cross_validate_model(model, X, y, name=""):
     """5-fold stratified CV, return mean ± std for PR-AUC and F1."""
     cv = StratifiedKFold(n_splits=N_FOLDS, shuffle=True,
@@ -77,14 +71,11 @@ def cross_validate_model(model, X, y, name=""):
         "f1_mean":     scores["test_f1"].mean(),
         "f1_std":      scores["test_f1"].std(),
     }
-
-
 def save_model(model, path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
         pickle.dump(model, f)
     logger.info("Saved model → %s", path)
-
 def get_models():
     return {
         "LogisticRegression": LogisticRegression(
@@ -115,32 +106,25 @@ def get_models():
             verbosity=0,
         ),
     }
-
-
 def train_pipeline(X, y, dataset_name: str, model_dir: str):
     """Full train/evaluate pipeline for one dataset."""
     logger.info("=" * 60)
     logger.info("Dataset: %s", dataset_name)
     logger.info("=" * 60)
-
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=TEST_SIZE, stratify=y, random_state=RANDOM_STATE
     )
     logger.info("Train: %d | Test: %d | Train fraud: %.2f%%",
                 len(X_train), len(X_test), y_train.mean()*100)
-
     results  = []
     cv_results = []
     best_model = None
     best_pr_auc = -1
     best_name   = ""
-
     for name, model in get_models().items():
         logger.info("Training %s ...", name)
-
         # Fit on full training set
         model.fit(X_train, y_train)
-
         # Hold-out evaluation
         res = evaluate(model, X_test, y_test, name=name)
         results.append({
@@ -152,7 +136,6 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
         logger.info("%s — ROC-AUC: %.4f | PR-AUC: %.4f | F1: %.4f",
                     name, res["roc_auc"], res["pr_auc"], res["f1"])
         logger.info("\n%s", res["report"])
-
         # Cross-validation
         cv = cross_validate_model(model, X_train, y_train, name=name)
         cv_results.append({
@@ -160,20 +143,17 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
             "CV PR-AUC":    f"{cv['pr_auc_mean']:.4f} ± {cv['pr_auc_std']:.4f}",
             "CV F1":        f"{cv['f1_mean']:.4f} ± {cv['f1_std']:.4f}",
         })
-
         # Track best by PR-AUC
         if res["pr_auc"] > best_pr_auc:
             best_pr_auc = res["pr_auc"]
             best_model  = model
             best_name   = name
-
     # Save best model
     save_model(
         best_model,
         os.path.join(model_dir, f"{dataset_name}_best_model.pkl")
     )
-
-    # Print comparison table
+ # Print comparison table
     print(f"\n{'=' * 70}")
     print(f"Results — {dataset_name}")
     print(f"{'=' * 70}")
@@ -182,23 +162,17 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
     print(pd.DataFrame(cv_results).to_string(index=False))
     print(f"\nBest model: {best_name} (PR-AUC = {best_pr_auc:.4f})")
     print(f"{'=' * 70}\n")
-
     return best_model, best_name, results, cv_results, X_test, y_test
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--fraud", default="data/processed/fraud_data_processed.csv")
     parser.add_argument("--cc",    default="data/processed/creditcard_processed.csv")
     parser.add_argument("--models", default="models/")
     args = parser.parse_args()
-
     os.makedirs(args.models, exist_ok=True)
-
-    # Fraud_Data pipeline
     X_f, y_f = load_dataset(args.fraud, target="class")
     train_pipeline(X_f, y_f, "fraud_data", args.models)
-
-    # creditcard pipeline
     X_c, y_c = load_dataset(args.cc, target="Class")
     train_pipeline(X_c, y_c, "creditcard", args.models)
+    
     
