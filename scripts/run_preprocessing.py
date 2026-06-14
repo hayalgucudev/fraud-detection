@@ -1,16 +1,16 @@
-
 import argparse
-import sys
 import os
-from src.data_preprocessing import preprocess_fraud_data, preprocess_creditcard
+import sys
+
+from src.data_preprocessing import preprocess_creditcard, preprocess_fraud_data
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--fraud", default="data/raw/Fraud_Data.csv")
-    parser.add_argument("--ip",    default="data/raw/IpAddress_to_Country.csv")
-    parser.add_argument("--cc",    default="data/raw/creditcard.csv")
-    parser.add_argument("--out",   default="data/processed/")
+    parser.add_argument("--ip", default="data/raw/IpAddress_to_Country.csv")
+    parser.add_argument("--cc", default="data/raw/creditcard.csv")
+    parser.add_argument("--out", default="data/processed/")
     args = parser.parse_args()
     os.makedirs(args.out, exist_ok=True)
     fraud = preprocess_fraud_data(args.fraud, args.ip)
@@ -18,4 +18,3 @@ if __name__ == "__main__":
     cc = preprocess_creditcard(args.cc)
     cc.to_csv(os.path.join(args.out, "creditcard_processed.csv"), index=False)
     print("Preprocessing complete.")
-    

@@ -96,6 +96,7 @@ def label_encode_country(df: pd.DataFrame) -> pd.DataFrame:
     in a single dense column.
     """
     from sklearn.preprocessing import LabelEncoder
+
     df = df.copy()
     le = LabelEncoder()
     df["country_encoded"] = le.fit_transform(df["country"].astype(str))
