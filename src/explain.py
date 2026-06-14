@@ -86,17 +86,17 @@ def plot_bar_importance(
 
 def plot_force(explainer, shap_values, X, idx, title="SHAP Force Plot", save_path=None):
     shap.initjs()
-    force_plot = shap.force_plot(
-        (
-            explainer.expected_value
-            if hasattr(explainer, "expected_value")
-            else explainer.expected_value[1]
-        ),
-        shap_values[idx],
-        X.iloc[idx] if hasattr(X, "iloc") else X[idx],
-        matplotlib=True,
-        show=False,
-    )
+    # force_plot = shap.force_plot(
+    #     (
+    #         explainer.expected_value
+    #         if hasattr(explainer, "expected_value")
+    #         else explainer.expected_value[1]
+    #     ),
+    #     shap_values[idx],
+    #     X.iloc[idx] if hasattr(X, "iloc") else X[idx],
+    #     matplotlib=True,
+    #     show=False,
+    # )
     plt.title(title, fontsize=12, fontweight="bold")
     plt.tight_layout()
     if save_path:

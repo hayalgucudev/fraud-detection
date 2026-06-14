@@ -3,13 +3,11 @@ import logging
 import os
 import pickle
 
-import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (average_precision_score, classification_report,
-                             confusion_matrix, f1_score,
-                             precision_recall_curve, roc_auc_score)
+                             confusion_matrix, f1_score, roc_auc_score)
 from sklearn.model_selection import (StratifiedKFold, cross_validate,
                                      train_test_split)
 from xgboost import XGBClassifier
@@ -188,7 +186,7 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
     print(pd.DataFrame(results).to_string(index=False))
     print(f"\nCross-Validation Results:")
     print(pd.DataFrame(cv_results).to_string(index=False))
-    print(f"\nBest model: {best_name} (PR-AUC = {best_pr_auc:.4f})")
+    print("\nBest model: {best_name} (PR-AUC = {best_pr_auc:.4f})")
     print(f"{'=' * 70}\n")
     return best_model, best_name, results, cv_results, X_test, y_test
 
