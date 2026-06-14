@@ -1,26 +1,3 @@
-"""
-train.py
-========
-Model building, training, and evaluation for both fraud datasets.
-
-Models trained:
-  1. Logistic Regression  (interpretable baseline)
-  2. Random Forest        (ensemble)
-  3. XGBoost              (gradient boosting)
-
-Evaluation metrics (imbalanced-data appropriate):
-  - Precision-Recall AUC
-  - F1-Score
-  - ROC-AUC
-  - Confusion Matrix
-
-Usage
------
-    python src/train.py \
-        --fraud data/processed/fraud_data_processed.csv \
-        --cc    data/processed/creditcard_processed.csv
-"""
-
 import argparse
 import logging
 import os
@@ -50,9 +27,6 @@ logger = logging.getLogger(__name__)
 RANDOM_STATE = 42
 TEST_SIZE    = 0.20
 N_FOLDS      = 5
-
-
-# ── Helpers ────────────────────────────────────────────────────────────────
 
 def load_dataset(path: str, target: str):
     """Load processed CSV, return X and y."""
@@ -111,9 +85,6 @@ def save_model(model, path):
         pickle.dump(model, f)
     logger.info("Saved model → %s", path)
 
-
-# ── Model definitions ──────────────────────────────────────────────────────
-
 def get_models():
     return {
         "LogisticRegression": LogisticRegression(
@@ -146,15 +117,12 @@ def get_models():
     }
 
 
-# ── Training pipeline ──────────────────────────────────────────────────────
-
 def train_pipeline(X, y, dataset_name: str, model_dir: str):
     """Full train/evaluate pipeline for one dataset."""
     logger.info("=" * 60)
     logger.info("Dataset: %s", dataset_name)
     logger.info("=" * 60)
 
-    # Stratified split
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=TEST_SIZE, stratify=y, random_state=RANDOM_STATE
     )
@@ -217,9 +185,6 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
 
     return best_model, best_name, results, cv_results, X_test, y_test
 
-
-# ── CLI ────────────────────────────────────────────────────────────────────
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--fraud", default="data/processed/fraud_data_processed.csv")
@@ -236,3 +201,4 @@ if __name__ == "__main__":
     # creditcard pipeline
     X_c, y_c = load_dataset(args.cc, target="Class")
     train_pipeline(X_c, y_c, "creditcard", args.models)
+    

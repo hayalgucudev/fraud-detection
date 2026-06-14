@@ -1,17 +1,3 @@
-"""
-explain.py
-==========
-SHAP-based model explainability utilities.
-
-Functions
----------
-get_shap_values(model, X)           → shap_values array
-plot_summary(shap_values, X, ...)   → SHAP summary (beeswarm) plot
-plot_force(shap_values, X, idx, ...)→ SHAP force plot for one prediction
-plot_waterfall(shap_values, X, idx) → SHAP waterfall plot
-top_features(shap_values, X, n=10) → DataFrame of top-n features by mean |SHAP|
-"""
-
 import logging
 import os
 
@@ -161,19 +147,6 @@ def plot_waterfall(explainer, shap_values, X, idx,
 
 
 def top_features(shap_values, X, n=10):
-    """
-    Return DataFrame of top-n features by mean |SHAP value|.
-
-    Parameters
-    ----------
-    shap_values : np.ndarray (n_samples, n_features)
-    X           : DataFrame with feature names
-    n           : number of top features to return
-
-    Returns
-    -------
-    DataFrame with columns [Feature, Mean_Abs_SHAP]
-    """
     feature_names = list(X.columns) if hasattr(X, "columns") \
         else [f"f{i}" for i in range(shap_values.shape[1])]
 
@@ -185,3 +158,4 @@ def top_features(shap_values, X, n=10):
 
     logger.info("Top %d features by mean |SHAP|:\n%s", n, df.to_string(index=False))
     return df
+

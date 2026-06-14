@@ -2,10 +2,11 @@
 import argparse
 import sys
 import os
+from src.data_preprocessing import preprocess_fraud_data, preprocess_creditcard
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.data_preprocessing import preprocess_fraud_data, preprocess_creditcard
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
