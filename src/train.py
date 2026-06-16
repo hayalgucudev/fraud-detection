@@ -12,6 +12,8 @@ from sklearn.model_selection import (StratifiedKFold, cross_validate,
                                      train_test_split)
 from xgboost import XGBClassifier
 
+from src.data_preprocessing import apply_smote
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -136,6 +138,7 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
         len(X_test),
         y_train.mean() * 100,
     )
+    X_train, y_train = apply_smote(X_train, y_train)
     results = []
     cv_results = []
     best_model = None
@@ -177,8 +180,23 @@ def train_pipeline(X, y, dataset_name: str, model_dir: str):
             best_pr_auc = res["pr_auc"]
             best_model = model
             best_name = name
-    # Save best model
-    save_model(best_model, os.path.join(model_dir, f"{dataset_name}_best_model.pkl"))
+    # Save best model and test set (names match modeling.ipynb / shap-explainability.ipynb)
+    model_filename = {
+        "fraud_data": "fraud_best_model.pkl",
+        "creditcard": "cc_best_model.pkl",
+    }.get(dataset_name, f"{dataset_name}_best_model.pkl")
+    test_prefix = {"fraud_data": "fraud", "creditcard": "cc"}.get(
+        dataset_name, dataset_name
+    )
+    save_model(best_model, os.path.join(model_dir, model_filename))
+    for name, obj in [
+        (f"{test_prefix}_X_test.pkl", X_test),
+        (f"{test_prefix}_y_test.pkl", y_test),
+    ]:
+        path = os.path.join(model_dir, name)
+        with open(path, "wb") as f:
+            pickle.dump(obj, f)
+        logger.info("Saved %s → %s", name, path)
     # Print comparison table
     print(f"\n{'=' * 70}")
     print(f"Results — {dataset_name}")
