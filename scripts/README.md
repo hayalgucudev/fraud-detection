@@ -18,4 +18,13 @@ python -m src.train
 python -m src.train --fraud data/processed/fraud_data_processed.csv --cc data/processed/creditcard_processed.csv --models models/
 ```
 
-Saves `fraud_best_model.pkl`, `cc_best_model.pkl`, and test-set pickles used by the SHAP notebook.
+## `generate_report_pdf.py`
+
+Builds `REPORT.pdf` from `REPORT.md` with all figures embedded (for final submission).
+
+```bash
+python scripts/generate_report_pdf.py
+```
+
+Upload `REPORT.pdf` to Google Drive and share a public "Anyone with the link" URL for submission.
+

@@ -152,7 +152,7 @@ See `REPORT.md` for the full narrative, visualizations, and business recommendat
 | Trained models | `models/` (run `modeling.ipynb` or `src.train`) |
 | Evaluation figures | `notebooks/figures/` |
 | SHAP plots | `notebooks/figures/shap/` |
-| End-to-end report | `REPORT.md` |
+| End-to-end report (PDF) | `REPORT.pdf` — generate with `python scripts/generate_report_pdf.py` |
 
 ---
 

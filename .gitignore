@@ -28,3 +28,6 @@ htmlcov/
 .pytest_cache/
 
 .env
+
+# Generated report PDF (submit via Google Drive)
+REPORT.pdf
