@@ -18,7 +18,8 @@ env/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 .DS_Store
 
@@ -27,3 +28,6 @@ htmlcov/
 .pytest_cache/
 
 .env
+
+# Generated report PDF (submit via Google Drive)
+REPORT.pdf

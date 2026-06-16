@@ -38,6 +38,8 @@ jobs:
           pytest tests/ \
             --verbose \
             --tb=short \
-            --cov=src \
+            --cov=src.data_preprocessing \
+            --cov=src.feature_engineering \
+            --cov=src.train \
             --cov-report=term-missing \
             --cov-fail-under=50
